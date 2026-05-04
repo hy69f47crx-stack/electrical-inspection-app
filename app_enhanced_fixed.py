@@ -676,16 +676,20 @@ elif st.session_state.page == '📝 إدخال البيانات':
 
         col1, col2 = st.columns(2)
         with col1:
+            contract_value = float(st.session_state.pricing_data.get('contract_value', 0))
             st.session_state.pricing_data['contract_value'] = st.number_input(
                 "💰 قيمة العقد الإجمالية",
-                value=st.session_state.pricing_data['contract_value'],
-                min_value=0
+                value=contract_value,
+                min_value=0.0
             )
+
+            first_payment = float(st.session_state.pricing_data.get('first_payment', 0))
             st.session_state.pricing_data['first_payment'] = st.number_input(
                 "🎁 الدفعة الأولى (%)",
-                value=st.session_state.pricing_data['first_payment'],
-                min_value=0,
-                max_value=100
+                value=first_payment,
+                min_value=0.0,
+                max_value=100.0,
+                step=1.0
             )
 
         with col2:
@@ -694,11 +698,14 @@ elif st.session_state.page == '📝 إدخال البيانات':
                 ['د.ك (دينار كويتي)', 'ر.ع (ريال سعودي)', '$ (دولار أمريكي)'],
                 index=0
             )
+
+            final_payment = float(st.session_state.pricing_data.get('final_payment', 0))
             st.session_state.pricing_data['final_payment'] = st.number_input(
                 "✅ الدفعة الختامية (%)",
-                value=st.session_state.pricing_data['final_payment'],
-                min_value=0,
-                max_value=100
+                value=final_payment,
+                min_value=0.0,
+                max_value=100.0,
+                step=1.0
             )
 
         payment_terms = st.text_area("📊 شروط الدفع الدورية", height=100)
@@ -712,33 +719,40 @@ elif st.session_state.page == '📝 إدخال البيانات':
 
         col1, col2 = st.columns(2)
         with col1:
+            daily_penalty = float(st.session_state.criteria_data.get('daily_penalty', 0.0))
             st.session_state.criteria_data['daily_penalty'] = st.number_input(
                 "📉 نسبة الغرامات اليومية (%)",
-                value=st.session_state.criteria_data['daily_penalty'],
+                value=daily_penalty,
                 min_value=0.0,
                 max_value=100.0,
                 step=0.1
             )
+
+            quality_bonus = float(st.session_state.criteria_data.get('quality_bonus', 0.0))
             st.session_state.criteria_data['quality_bonus'] = st.number_input(
                 "⭐ حافز الجودة (%)",
-                value=st.session_state.criteria_data['quality_bonus'],
+                value=quality_bonus,
                 min_value=0.0,
                 max_value=100.0,
                 step=0.1
             )
 
         with col2:
+            max_penalty = float(st.session_state.criteria_data.get('max_penalty', 0.0))
             st.session_state.criteria_data['max_penalty'] = st.number_input(
                 "🛑 أقصى غرامات (%)",
-                value=st.session_state.criteria_data['max_penalty'],
-                min_value=0,
-                max_value=100
+                value=max_penalty,
+                min_value=0.0,
+                max_value=100.0,
+                step=1.0
             )
+
             acceptance_rate = st.number_input(
                 "⚠️ نسبة الأعمال الناقصة المقبولة (%)",
-                min_value=0,
-                max_value=100,
-                value=5
+                min_value=0.0,
+                max_value=100.0,
+                value=5.0,
+                step=1.0
             )
 
         if st.button("💾 حفظ معايير التقييم", key="save_criteria"):
