@@ -1,22 +1,36 @@
-# تطبيق المعاينات الكهربائية - المتطلبات
 # Electrical Inspection Application - Requirements
+# تطبيق المعاينات الكهربائية - المتطلبات
 
-# Core Framework
+# ===== Core Frameworks =====
 streamlit==1.57.0
+fastapi>=0.104.1
+uvicorn>=0.24.0
 
-# Data Processing
+# ===== Data Processing =====
 pandas==3.0.2
 numpy>=1.24.0
+sqlalchemy>=2.0.0
 
-# Visualization
+# ===== Visualization =====
 plotly==6.7.0
-plotly-express>=5.17.0
+matplotlib>=3.7.0
 
-# AI/ML Integration
+# ===== AI/ML Integration =====
 anthropic>=0.21.0
+sentence-transformers>=2.2.0
 
-# Environment Configuration
+# ===== Discord Bot =====
+discord.py>=2.3.0
+
+# ===== Environment & Config =====
 python-dotenv>=1.0.0
 
-# Utilities
+# ===== Utilities =====
 requests>=2.31.0
+python-dateutil>=2.8.2
+pydantic>=2.0.0
+
+# ===== Optional: Document Processing =====
+PyPDF2>=3.0.0
+python-docx>=0.8.11
+openpyxl>=3.1.0

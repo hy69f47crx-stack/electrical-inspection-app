@@ -15,7 +15,8 @@ except ImportError:
     CHATBOT_AVAILABLE = False
 
 # تحميل متغيرات البيئة
-load_dotenv()
+load_dotenv(dotenv_path="/Users/fahadalkandri/Desktop/Projects/electrical_assistant/.env")
+
 
 # Page Configuration
 st.set_page_config(
@@ -25,81 +26,323 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# Custom CSS - Gamma Design System
+# ===== PRIDE BAR THEME - CSS الكاملة =====
 st.markdown("""
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap');
 
-    /* ===== GAMMA DESIGN SYSTEM ===== */
+    /* ===== متغيرات الألوان - Pride Bar Theme ===== */
     :root {
-        /* Colors */
-        --color-gamma-blue: #002253;
-        --color-cloud-white: #ffffff;
-        --color-coal-black: #000000;
-        --gradient-sky: linear-gradient(to top, rgb(255, 255, 255), rgb(198, 230, 250));
-
-        /* Typography */
-        --font-ppmori: 'Inter', 'Roboto', ui-sans-serif, system-ui, sans-serif;
-        --font-esbuild: 'Roboto', ui-sans-serif, system-ui, sans-serif;
-
-        /* Spacing */
-        --spacing-8: 8px;
-        --spacing-20: 20px;
-        --spacing-32: 32px;
-
-        /* Border Radius */
-        --radius-cards: 12px;
-
-        /* Shadows */
-        --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.08);
-        --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.08);
+        --bg-cream: #f0eee9;
+        --bg-cream-2: #f5efe6;
+        --bg-paper: #ffffff;
+        --color-accent: #E0C896;
+        --accent-light: #f0e6d0;
+        --accent-dark: #d4af6a;
+        --color-dark: #5C4A3A;
+        --color-text-dark: #1a1410;
+        --color-text-medium: #3d3226;
+        --color-text-light: #8b7d6b;
+        --line-color: #e0d9d0;
+        --border-color: #ddd0c8;
+        --shadow-sm: 0 1px 3px rgba(92, 74, 58, 0.12);
+        --shadow-md: 0 4px 12px rgba(92, 74, 58, 0.15);
+        --shadow-lg: 0 12px 32px rgba(92, 74, 58, 0.18);
+        --font-primary: 'Inter', 'Roboto', -apple-system, BlinkMacSystemFont, sans-serif;
     }
 
-    /* عام */
-    body {
-        direction: rtl;
-        text-align: right;
-        background: var(--gradient-sky) !important;
-        font-family: var(--font-ppmori);
+    /* ===== العناصر الأساسية ===== */
+    * { box-sizing: border-box; }
+
+    html, body {
+        background-color: var(--bg-cream) !important;
+        color: var(--color-text-dark) !important;
+        font-family: var(--font-primary) !important;
+        direction: rtl !important;
+        text-align: right !important;
     }
 
     .main {
-        background: var(--gradient-sky);
-        padding: var(--spacing-32);
+        background-color: var(--bg-cream) !important;
+        padding: 20px !important;
     }
 
-    /* Cards */
-    .stat-card {
-        background: var(--color-cloud-white);
-        padding: var(--spacing-32);
-        border-radius: var(--radius-cards);
-        border-left: 3px solid var(--color-gamma-blue);
-        box-shadow: var(--shadow-md);
-        direction: rtl;
+    .stApp {
+        background-color: var(--bg-cream) !important;
     }
 
-    .stat-value {
-        font-size: 32px;
-        font-weight: bold;
-        color: #333;
+    /* ===== Sidebar ===== */
+    [data-testid="stSidebar"] {
+        background-color: var(--bg-paper) !important;
+        border-right: 2px solid var(--color-accent) !important;
+    }
 
-    /* استيراد الخط العربي الجميل */
-    @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap');
+    [data-testid="stSidebar"] > div:first-child {
+        background-color: var(--bg-paper) !important;
+    }
 
-    /* Sidebar AI Chat */
+    /* ===== العناوين ===== */
+    h1 {
+        color: var(--color-accent) !important;
+        font-size: 36px !important;
+        font-weight: 800 !important;
+        border-bottom: 3px solid var(--color-accent) !important;
+        padding-bottom: 12px !important;
+        margin-bottom: 24px !important;
+    }
+
+    h2 {
+        color: var(--color-dark) !important;
+        font-size: 28px !important;
+        font-weight: 700 !important;
+        margin-bottom: 16px !important;
+    }
+
+    h3 {
+        color: var(--color-dark) !important;
+        font-size: 22px !important;
+        font-weight: 700 !important;
+        margin-bottom: 12px !important;
+    }
+
+    h4, h5, h6 {
+        color: var(--color-text-dark) !important;
+        font-weight: 600 !important;
+    }
+
+    /* ===== الأزرار ===== */
+    .stButton > button {
+        background: linear-gradient(135deg, #E0C896 0%, #d4af6a 100%) !important;
+        color: var(--color-text-dark) !important;
+        border: none !important;
+        border-radius: 8px !important;
+        padding: 12px 24px !important;
+        font-weight: 700 !important;
+        font-size: 15px !important;
+        transition: all 0.3s ease !important;
+        box-shadow: var(--shadow-md) !important;
+        cursor: pointer !important;
+    }
+
+    .stButton > button:hover {
+        background: linear-gradient(135deg, #d4af6a 0%, #c9975e 100%) !important;
+        box-shadow: var(--shadow-lg) !important;
+        transform: translateY(-2px) !important;
+    }
+
+    .stButton > button:active {
+        background: linear-gradient(135deg, #c9975e 0%, #b8855a 100%) !important;
+        transform: translateY(0) !important;
+    }
+
+    /* ===== حقول الإدخال ===== */
+    .stTextInput > div > div > input,
+    .stSelectbox > div > div > select,
+    .stNumberInput > div > div > input,
+    .stTextArea > div > div > textarea {
+        background-color: var(--bg-paper) !important;
+        border: 2px solid var(--color-accent) !important;
+        border-radius: 8px !important;
+        color: var(--color-text-dark) !important;
+        padding: 12px 16px !important;
+        font-family: var(--font-primary) !important;
+        font-size: 14px !important;
+        transition: all 0.3s ease !important;
+    }
+
+    .stTextInput > div > div > input:focus,
+    .stSelectbox > div > div > select:focus,
+    .stNumberInput > div > div > input:focus,
+    .stTextArea > div > div > textarea:focus {
+        border-color: var(--accent-dark) !important;
+        box-shadow: 0 0 0 4px rgba(224, 200, 150, 0.2) !important;
+        outline: none !important;
+    }
+
+    /* ===== البطاقات والحاويات ===== */
+    .stContainer {
+        background-color: var(--bg-paper) !important;
+        border-radius: 12px !important;
+        padding: 20px !important;
+        border: 2px solid var(--color-accent) !important;
+        box-shadow: var(--shadow-sm) !important;
+        margin-bottom: 16px !important;
+    }
+
+    /* ===== الإحصائيات والمقاييس ===== */
+    [data-testid="stMetricValue"] {
+        color: var(--color-accent) !important;
+        font-weight: 800 !important;
+        font-size: 32px !important;
+    }
+
+    [data-testid="stMetricLabel"] {
+        color: var(--color-text-dark) !important;
+        font-weight: 600 !important;
+        font-size: 14px !important;
+    }
+
+    /* ===== الجداول والجداول البيانية ===== */
+    .stDataFrame {
+        background-color: var(--bg-paper) !important;
+        border-radius: 12px !important;
+        overflow: hidden !important;
+        box-shadow: var(--shadow-sm) !important;
+        border: 1px solid var(--border-color) !important;
+    }
+
+    .stDataFrame table {
+        width: 100% !important;
+    }
+
+    .stDataFrame th {
+        background: linear-gradient(135deg, #E0C896 0%, #d4af6a 100%) !important;
+        color: var(--color-text-dark) !important;
+        font-weight: 700 !important;
+        padding: 14px !important;
+        border-bottom: 2px solid var(--color-accent) !important;
+        text-align: right !important;
+    }
+
+    .stDataFrame td {
+        padding: 12px 14px !important;
+        border-bottom: 1px solid var(--border-color) !important;
+        color: var(--color-text-dark) !important;
+    }
+
+    .stDataFrame tr:hover {
+        background-color: rgba(224, 200, 150, 0.1) !important;
+    }
+
+    /* ===== التبويبات ===== */
+    .stTabs [data-baseweb="tab-list"] {
+        border-bottom: 3px solid var(--color-accent) !important;
+        background-color: var(--bg-cream) !important;
+    }
+
+    .stTabs [aria-selected="true"] {
+        color: var(--color-accent) !important;
+        border-bottom: 4px solid var(--color-accent) !important;
+        font-weight: 700 !important;
+    }
+
+    .stTabs [aria-selected="false"] {
+        color: var(--color-text-light) !important;
+    }
+
+    /* ===== الرسوم البيانية ===== */
+    .plotly-graph-div {
+        background-color: var(--bg-paper) !important;
+        border-radius: 12px !important;
+        padding: 16px !important;
+        box-shadow: var(--shadow-sm) !important;
+        border: 1px solid var(--border-color) !important;
+    }
+
+    /* ===== المنسقات ===== */
+    .streamlit-expanderHeader {
+        background: linear-gradient(135deg, rgba(224, 200, 150, 0.15) 0%, rgba(224, 200, 150, 0.08) 100%) !important;
+        border-left: 4px solid var(--color-accent) !important;
+        border-radius: 8px !important;
+        padding: 12px 16px !important;
+        font-weight: 600 !important;
+        color: var(--color-dark) !important;
+    }
+
+    .streamlit-expanderHeader:hover {
+        background: linear-gradient(135deg, rgba(224, 200, 150, 0.2) 0%, rgba(224, 200, 150, 0.12) 100%) !important;
+    }
+
+    /* ===== رسائل الحالة ===== */
+    .stSuccess {
+        background-color: rgba(76, 175, 80, 0.1) !important;
+        border-left: 4px solid #4caf50 !important;
+        border-radius: 8px !important;
+        padding: 12px !important;
+    }
+
+    .stWarning {
+        background-color: rgba(255, 193, 7, 0.1) !important;
+        border-left: 4px solid #ffc107 !important;
+        border-radius: 8px !important;
+        padding: 12px !important;
+    }
+
+    .stError {
+        background-color: rgba(244, 67, 54, 0.1) !important;
+        border-left: 4px solid #f44336 !important;
+        border-radius: 8px !important;
+        padding: 12px !important;
+    }
+
+    .stInfo {
+        background-color: rgba(224, 200, 150, 0.15) !important;
+        border-left: 4px solid var(--color-accent) !important;
+        border-radius: 8px !important;
+        padding: 12px !important;
+    }
+
+    /* ===== النصوص والروابط ===== */
+    p, span, label {
+        color: var(--color-text-dark) !important;
+        line-height: 1.6 !important;
+    }
+
+    a {
+        color: var(--color-accent) !important;
+        text-decoration: none !important;
+        font-weight: 600 !important;
+        transition: color 0.3s ease !important;
+    }
+
+    a:hover {
+        color: var(--accent-dark) !important;
+        text-decoration: underline !important;
+    }
+
+    /* ===== الخطوط الفاصلة ===== */
+    hr {
+        border: none !important;
+        border-top: 2px solid var(--color-accent) !important;
+        margin: 24px 0 !important;
+    }
+
+    /* ===== المربعات الاختيارية والراديو ===== */
+    .stCheckbox, .stRadio {
+        padding: 8px 12px !important;
+        background-color: transparent !important;
+        border-radius: 8px !important;
+        transition: background-color 0.3s ease !important;
+    }
+
+    .stCheckbox:hover, .stRadio:hover {
+        background-color: rgba(224, 200, 150, 0.1) !important;
+    }
+
+    /* ===== الرسوم المتحركة ===== */
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    .stApp { animation: fadeIn 0.4s ease-out !important; }
+
+    /* ===== Sidebar AI Chat ===== */
     .sidebar-chat-container {
-        background: linear-gradient(135deg, #F0F5FF 0%, #F5F7FA 100%);
-        border: 2px solid #D4AF37;
+        background: linear-gradient(135deg, #f5efe6 0%, #f0eee9 100%);
+        border: 2px solid var(--color-accent);
         border-radius: 15px;
         padding: 12px;
         margin-top: 16px;
         font-family: 'Tajawal', sans-serif;
         direction: rtl;
+        box-shadow: var(--shadow-sm);
     }
 
     .sidebar-chat-header {
-        background: linear-gradient(135deg, #0066CC 0%, #004499 100%);
+        background: linear-gradient(135deg, #5C4A3A 0%, #3d3226 100%);
         color: white;
         padding: 10px 12px;
         border-radius: 10px;
@@ -107,7 +350,7 @@ st.markdown("""
         font-weight: 700;
         font-size: 14px;
         margin-bottom: 10px;
-        box-shadow: 0 2px 8px rgba(0, 102, 204, 0.2);
+        box-shadow: var(--shadow-sm);
     }
 
     .sidebar-chat-messages {
@@ -142,20 +385,9 @@ st.markdown("""
         animation: fadeIn 0.3s ease-in;
     }
 
-    @keyframes fadeIn {
-        from {
-            opacity: 0;
-            transform: translateY(3px);
-        }
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
-    }
-
     .sidebar-user-message {
-        background: linear-gradient(135deg, #0066CC 0%, #0052A3 100%);
-        color: white;
+        background: linear-gradient(135deg, #E0C896 0%, #d4af6a 100%);
+        color: var(--color-text-dark);
         text-align: right;
         border-radius: 8px 2px 8px 8px;
         margin-left: 20px;
@@ -163,10 +395,10 @@ st.markdown("""
     }
 
     .sidebar-bot-message {
-        background: #E8F0FE;
-        color: #1a1a2e;
+        background: #f0eee9;
+        color: var(--color-text-dark);
         text-align: right;
-        border-right: 3px solid #D4AF37;
+        border-right: 3px solid var(--color-accent);
         border-radius: 2px 8px 8px 8px;
         margin-right: 20px;
     }
@@ -191,17 +423,17 @@ st.markdown("""
 
     .sidebar-chat-input-area input:focus {
         outline: none;
-        border-color: #0066CC;
-        box-shadow: 0 0 0 2px rgba(0, 102, 204, 0.1);
+        border-color: var(--color-accent);
+        box-shadow: 0 0 0 2px rgba(224, 200, 150, 0.2);
     }
 
     .sidebar-chat-input-area input::placeholder {
-        color: #999;
+        color: var(--color-text-light);
     }
 
     .sidebar-chat-input-area button {
-        background: linear-gradient(135deg, #0066CC 0%, #004499 100%);
-        color: white;
+        background: linear-gradient(135deg, #E0C896 0%, #d4af6a 100%);
+        color: var(--color-text-dark);
         border: none;
         border-radius: 50%;
         width: 32px;
@@ -212,25 +444,26 @@ st.markdown("""
         align-items: center;
         justify-content: center;
         transition: all 0.3s ease;
-        box-shadow: 0 2px 6px rgba(0, 102, 204, 0.3);
+        box-shadow: var(--shadow-sm);
         flex-shrink: 0;
+        font-weight: 600;
     }
 
     .sidebar-chat-input-area button:hover {
-        background: linear-gradient(135deg, #004499 0%, #003366 100%);
+        background: linear-gradient(135deg, #d4af6a 0%, #c9975e 100%);
         transform: scale(1.05);
-        box-shadow: 0 3px 8px rgba(0, 102, 204, 0.4);
+        box-shadow: var(--shadow-md);
     }
 
     .sidebar-chat-input-area button:active {
         transform: scale(0.95);
     }
-    }
 
-    .stat-label {
-        font-size: 12px;
-        color: #666;
-        text-transform: uppercase;
+    /* ===== Responsive ===== */
+    @media (max-width: 768px) {
+        h1 { font-size: 28px !important; }
+        h2 { font-size: 22px !important; }
+        .stContainer { padding: 16px !important; }
     }
     </style>
 """, unsafe_allow_html=True)
