@@ -17,6 +17,23 @@ except ImportError:
 # تحميل متغيرات البيئة
 load_dotenv(dotenv_path="/Users/fahadalkandri/Desktop/Projects/electrical_assistant/.env")
 
+# ✅ Performance Optimization - Caching
+@st.cache_resource
+def get_rag_system():
+    """تحميل RAG system مرة واحدة فقط (Performance Cache)"""
+    try:
+        return create_rag_system()
+    except Exception:
+        return None
+
+@st.cache_data(ttl=3600)
+def load_static_data():
+    """تحميل البيانات الثابتة مرة واحدة في الساعة"""
+    return {
+        'status': 'loaded',
+        'timestamp': datetime.now()
+    }
+
 
 # Page Configuration
 st.set_page_config(
@@ -26,12 +43,13 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# ===== PRIDE BAR THEME - CSS الكاملة =====
+# ===== PRIDE BAR THEME - CSS الكاملة (محسّن للجوال) =====
 st.markdown("""
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
     @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap');
+    @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css');
 
     /* ===== متغيرات الألوان - Pride Bar Theme ===== */
     :root {
@@ -62,21 +80,43 @@ st.markdown("""
         font-family: var(--font-primary) !important;
         direction: rtl !important;
         text-align: right !important;
+        overflow-x: hidden !important;
     }
 
     .main {
         background-color: var(--bg-cream) !important;
-        padding: 20px !important;
+        padding: 20px 12px 90px 12px !important;
+        max-width: 100% !important;
     }
 
     .stApp {
         background-color: var(--bg-cream) !important;
+        padding: 0 !important;
     }
 
-    /* ===== Sidebar ===== */
+    /* ===== Sidebar - محسّن للجوال ===== */
     [data-testid="stSidebar"] {
         background-color: var(--bg-paper) !important;
         border-right: 2px solid var(--color-accent) !important;
+        max-width: 260px !important;
+    }
+
+    @media (max-width: 768px) {
+        [data-testid="stSidebar"] {
+            position: fixed !important;
+            bottom: 0 !important;
+            left: 0 !important;
+            right: 0 !important;
+            top: auto !important;
+            width: 100% !important;
+            height: auto !important;
+            border-right: none !important;
+            border-top: 2px solid var(--color-accent) !important;
+            display: flex !important;
+            flex-direction: row !important;
+            padding: 8px 0 0 0 !important;
+            z-index: 999 !important;
+        }
     }
 
     [data-testid="stSidebar"] > div:first-child {
@@ -459,11 +499,177 @@ st.markdown("""
         transform: scale(0.95);
     }
 
-    /* ===== Responsive ===== */
+    /* ===== Responsive - Mobile First ===== */
+    @media (max-width: 1024px) {
+        .main {
+            padding: 16px 10px 100px 10px !important;
+        }
+    }
+
     @media (max-width: 768px) {
-        h1 { font-size: 28px !important; }
-        h2 { font-size: 22px !important; }
-        .stContainer { padding: 16px !important; }
+        /* === Typography === */
+        h1 {
+            font-size: 26px !important;
+            padding-bottom: 10px !important;
+            margin-bottom: 16px !important;
+        }
+        h2 {
+            font-size: 20px !important;
+            margin-bottom: 12px !important;
+        }
+        h3 {
+            font-size: 18px !important;
+        }
+
+        /* === Layout === */
+        .main {
+            padding: 12px 8px 110px 8px !important;
+        }
+
+        .stContainer {
+            padding: 14px !important;
+            margin-bottom: 12px !important;
+            border-radius: 10px !important;
+        }
+
+        /* === Sidebar as Bottom Navigation === */
+        [data-testid="stSidebar"] {
+            height: 70px !important;
+            overflow-x: auto !important;
+            overflow-y: hidden !important;
+        }
+
+        [data-testid="stSidebar"] > div:first-child {
+            display: flex !important;
+            flex-direction: row !important;
+            align-items: center !important;
+            padding: 4px !important;
+            gap: 4px !important;
+        }
+
+        /* === Buttons === */
+        .stButton > button {
+            width: 100% !important;
+            padding: 10px 12px !important;
+            font-size: 13px !important;
+            border-radius: 10px !important;
+        }
+
+        /* === Inputs === */
+        .stTextInput > div > div > input,
+        .stNumberInput > div > div > input,
+        .stTextArea > div > div > textarea {
+            font-size: 14px !important;
+            padding: 10px 12px !important;
+        }
+
+        /* === Tables === */
+        .stDataFrame {
+            font-size: 12px !important;
+        }
+
+        .stDataFrame th {
+            padding: 10px 8px !important;
+            font-size: 12px !important;
+        }
+
+        .stDataFrame td {
+            padding: 8px 6px !important;
+            font-size: 12px !important;
+        }
+
+        /* === Chat Container === */
+        .sidebar-chat-container {
+            margin-top: 8px !important;
+            padding: 10px !important;
+            border-radius: 12px !important;
+        }
+
+        .sidebar-chat-header {
+            font-size: 12px !important;
+            padding: 8px 10px !important;
+            margin-bottom: 8px !important;
+        }
+
+        .sidebar-chat-messages {
+            max-height: 200px !important;
+            padding: 8px !important;
+            margin-bottom: 8px !important;
+        }
+
+        .sidebar-message {
+            font-size: 11px !important;
+            padding: 6px 8px !important;
+            margin: 4px 0 !important;
+        }
+
+        .sidebar-chat-input-area {
+            display: flex !important;
+            gap: 6px !important;
+            align-items: stretch !important;
+        }
+
+        .sidebar-chat-input-area input {
+            font-size: 12px !important;
+            padding: 8px 10px !important;
+        }
+
+        .sidebar-chat-input-area button {
+            width: 32px !important;
+            height: 32px !important;
+            font-size: 12px !important;
+            padding: 0 !important;
+        }
+
+        /* === Metrics === */
+        [data-testid="stMetricValue"] {
+            font-size: 24px !important;
+        }
+
+        [data-testid="stMetricLabel"] {
+            font-size: 12px !important;
+        }
+
+        /* === Tabs === */
+        .stTabs [data-baseweb="tab"] {
+            padding: 8px 12px !important;
+            font-size: 13px !important;
+        }
+
+        /* === Selectbox and Multiselect === */
+        .stSelectbox label,
+        .stMultiSelect label {
+            font-size: 12px !important;
+        }
+
+        /* === Scrollbars === */
+        ::-webkit-scrollbar {
+            height: 6px !important;
+            width: 6px !important;
+        }
+    }
+
+    @media (max-width: 480px) {
+        /* === Extra small screens === */
+        h1 { font-size: 22px !important; }
+        h2 { font-size: 18px !important; }
+
+        .main {
+            padding: 10px 6px 100px 6px !important;
+        }
+
+        .stContainer {
+            padding: 12px !important;
+        }
+
+        /* === Sidebar for very small devices === */
+        [data-testid="stSidebar"] {
+            height: 60px !important;
+        }
+
+        .sidebar-chat-container {
+            display: none !important;
+        }
     }
     </style>
 """, unsafe_allow_html=True)
@@ -504,10 +710,10 @@ if 'criteria_data' not in st.session_state:
         'quality_bonus': 1.0,
     }
 
-# نظام RAG للـ Chatbot الذكي
+# ✅ نظام RAG للـ Chatbot الذكي (مع Performance Cache)
 if CHATBOT_AVAILABLE and 'rag_system' not in st.session_state:
     try:
-        st.session_state.rag_system = create_rag_system()
+        st.session_state.rag_system = get_rag_system()  # ✅ استخدام الدالة المخزنة
     except Exception as e:
         st.session_state.rag_system = None
         st.warning(f"⚠️ تعذر تفعيل الـ Chatbot الذكي: {str(e)}")

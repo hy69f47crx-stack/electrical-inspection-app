@@ -6,11 +6,29 @@
 import os
 from typing import List, Tuple, Optional
 import json
+from pathlib import Path
+from functools import lru_cache
 from anthropic import Anthropic
 from dotenv import load_dotenv
 
 # تحميل متغيرات البيئة
-load_dotenv()
+def load_env_variables():
+    """تحميل متغيرات البيئة بطريقة موثوقة"""
+    # أولاً: محاولة من المسار الحالي
+    load_dotenv()
+
+    # ثانياً: إذا لم تعثر، قراءة مباشرة من الملف
+    if not os.getenv('ANTHROPIC_API_KEY'):
+        env_path = Path(__file__).parent / '.env'
+        if env_path.exists():
+            with open(env_path, 'r') as f:
+                for line in f:
+                    line = line.strip()
+                    if '=' in line and not line.startswith('#'):
+                        key, value = line.split('=', 1)
+                        os.environ[key.strip()] = value.strip()
+
+load_env_variables()
 
 class DocumentRAG:
     """نظام RAG للتعامل مع المستندات والإجابة على الأسئلة"""
@@ -25,11 +43,15 @@ class DocumentRAG:
             )
 
         self.client = Anthropic()
-        self.model = os.getenv('CLAUDE_MODEL', 'claude-3-5-sonnet-20241022')
+        self.model = os.getenv('CLAUDE_MODEL', 'claude-opus-4-1-20250805')
 
         # تخزين المستندات والنصوص المستخرجة
         self.documents: dict[str, str] = {}  # {filename: text_content}
         self.conversation_history: list = []  # سجل المحادثة
+
+        # ✅ تخزين مؤقت للنتائج (Performance Cache)
+        self._context_cache: dict[str, Tuple[str, List[str]]] = {}
+        self._relevance_cache: dict[str, float] = {}
 
     def add_document(self, filename: str, content: str) -> None:
         """
@@ -44,9 +66,7 @@ class DocumentRAG:
 
     def get_relevant_context(self, query: str, top_k: int = 3) -> Tuple[str, List[str]]:
         """
-        البحث عن أكثر المستندات صلة بالسؤال
-
-        استخدام بحث نصي بسيط (يمكن تطويره لاحقاً بـ embeddings)
+        البحث عن أكثر المستندات صلة بالسؤال (مع Caching للأداء)
 
         Args:
             query: السؤال
@@ -55,6 +75,11 @@ class DocumentRAG:
         Returns:
             tuple: (context_text, source_files)
         """
+        # ✅ فحص الـ Cache أولاً
+        cache_key = f"{query}|{top_k}"
+        if cache_key in self._context_cache:
+            return self._context_cache[cache_key]
+
         if not self.documents:
             return "", []
 
@@ -105,7 +130,11 @@ class DocumentRAG:
                 sources.add(para_info['source'])
 
         context = "\n\n---\n\n".join(context_parts)
-        return context, list(sources)
+        result = (context, list(sources))
+
+        # ✅ حفظ النتيجة في الـ Cache
+        self._context_cache[cache_key] = result
+        return result
 
     def _calculate_relevance(self, query: str, text: str) -> float:
         """
