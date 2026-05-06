@@ -81,17 +81,33 @@ st.markdown("""
         direction: rtl !important;
         text-align: right !important;
         overflow-x: hidden !important;
+        width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
     }
 
     .main {
         background-color: var(--bg-cream) !important;
-        padding: 20px 12px 90px 12px !important;
+        padding: 20px 12px 20px 12px !important;
         max-width: 100% !important;
+        width: 100% !important;
+        box-sizing: border-box !important;
+        overflow-x: hidden !important;
     }
 
     .stApp {
         background-color: var(--bg-cream) !important;
         padding: 0 !important;
+        width: 100% !important;
+        overflow-x: hidden !important;
+        max-width: 100% !important;
+        box-sizing: border-box !important;
+    }
+
+    [data-testid="stAppViewContainer"] {
+        width: 100% !important;
+        max-width: 100% !important;
+        overflow-x: hidden !important;
     }
 
     /* ===== Sidebar - محسّن للجوال ===== */
@@ -99,16 +115,23 @@ st.markdown("""
         background-color: var(--bg-paper) !important;
         border-right: 2px solid var(--color-accent) !important;
         max-width: 260px !important;
+        overflow-x: hidden !important;
+    }
+
+    [data-testid="stSidebarContent"] {
+        width: 100% !important;
+        overflow-x: hidden !important;
     }
 
     @media (max-width: 768px) {
+        /* عندما يكون الـ sidebar مفتوح على الجوال */
         [data-testid="stSidebar"] {
             position: fixed !important;
             bottom: 0 !important;
             left: 0 !important;
             right: 0 !important;
             top: auto !important;
-            width: 100% !important;
+            width: 100vw !important;
             height: auto !important;
             border-right: none !important;
             border-top: 2px solid var(--color-accent) !important;
@@ -116,11 +139,24 @@ st.markdown("""
             flex-direction: row !important;
             padding: 8px 0 0 0 !important;
             z-index: 999 !important;
+            max-width: none !important;
+            box-sizing: border-box !important;
+            overflow-x: auto !important;
+            overflow-y: hidden !important;
+        }
+
+        .main {
+            padding: 20px 12px 80px 12px !important;
+            margin: 0 !important;
+            width: 100% !important;
         }
     }
 
     [data-testid="stSidebar"] > div:first-child {
         background-color: var(--bg-paper) !important;
+        width: 100% !important;
+        overflow-x: auto !important;
+        overflow-y: hidden !important;
     }
 
     /* ===== العناوين ===== */
